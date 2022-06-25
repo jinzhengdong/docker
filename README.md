@@ -16,3 +16,25 @@ After started we can access the tutorial from http://localhost:8080 or we can ba
 
 <img src="/images/img001.png">
 
+Above figure toolbar we can:
+
+* Open with browser, http://localhost:8080
+* Open in terminal
+* Pause
+* Restart
+* Stop
+* Delete
+
+## Our Application
+
+Within ```/res``` there is ```app.zip``` extract it to ```app```, create ```Dockerfile``` under ```/app``` with following contents:
+
+```
+FROM node:12-alpine
+# Adding build tools to make yarn install work on Apple silicon / arm64 machines
+RUN apk add --no-cache python2 g++ make
+WORKDIR /app
+COPY . .
+RUN yarn install --production
+CMD ["node", "src/index.js"]
+```
