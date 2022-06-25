@@ -38,3 +38,20 @@ COPY . .
 RUN yarn install --production
 CMD ["node", "src/index.js"]
 ```
+
+Back to terminal run below command:
+
+```
+docker build -t tutorial .
+```
+
+* Above command use Dockerfile to build new image
+* ```-t tutorial``` is the name
+* After image created we can run it in container with below command:
+
+```
+docker run -dp 3000:3000 tutorial
+```
+
+* After above we can access tutorial from http://localhost:3000
+
