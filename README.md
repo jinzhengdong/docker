@@ -265,3 +265,179 @@ Dockerfile includes following parts:
 * USER
 * CMD
 * ENTRYPOINT
+
+### Choosing the Right Base Image
+
+For the Dockerfile we can access https://docs.docker.com/samples/
+
+For image we can access https://hub.docker.com/ and find like "node"
+
+* Open the project directory ```react-app```, and create ```Dockerfile``` under the dir with following contents:
+
+```
+FROM node:14.16.0-alpine3.13
+```
+
+### Copying Files and Directories
+
+```
+FROM node:14.16.0-alpine3.13
+WORKDIR /app
+COPY . .
+```
+
+After above updating run below command:
+
+```
+docker build -t react-app .
+```
+
+then:
+
+```bash
+docker run -it react-app sh
+```
+
+### Excluding Files and Directories
+
+When we build the image, for eaxmple node_modules should not be transfered, for this case, we should create a file named ```.dockerignore``` and add following line to it:
+
+```
+node_modules/
+```
+
+After above updating we can run below command again to build the image:
+
+```
+docker build -t react-app .
+```
+
+After image built we can run the image with below command
+
+```bash
+docker run -it react-app sh
+```
+
+### Running Commands
+
+Continue with Dockerfile:
+
+```
+FROM node:14.16.0-alpine3.13
+WORKDIR /app
+COPY . .
+RUN npm install
+```
+
+After above updating we can run below command again to build the image:
+
+```
+docker build -t react-app .
+```
+
+After image built we can run the image with below command
+
+```bash
+docker run -it react-app sh
+```
+
+### Setting Environment Variables
+
+Continue with Dockerfile:
+
+```
+FROM node:14.16.0-alpine3.13
+WORKDIR /app
+COPY . .
+RUN npm install
+ENV API_URL=http://api.ereach.me/
+```
+
+then run:
+
+```
+docker build -t react-app .
+```
+
+After image built we can run the image with below command
+
+```bash
+docker run -it react-app sh
+```
+
+After above command we can check the env from terminal:
+
+```
+C:\Users\Jinzd\Documents\docker\react-app>docker run -it react-app sh
+/app # printenv
+NODE_VERSION=14.16.0
+HOSTNAME=8ffdc77f2c0e
+YARN_VERSION=1.22.5
+SHLVL=2
+HOME=/root
+TERM=xterm
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/app
+API_URL=http://api.ereach.m
+/app #
+```
+
+### Exposing Ports
+
+Back to ```Dockerfile```:
+
+```
+FROM node:14.16.0-alpine3.13
+WORKDIR /app
+COPY . .
+RUN npm install
+ENV API_URL=http://api.ereach.me/
+EXPOSE 3000
+```
+
+### Setting the User
+
+* Start image react-app with sh exec:
+
+```
+docker run -it react-app sh
+
+addgroup app
+adduser -S -G app app
+groups app
+```
+
+Above command we exec like below:
+
+```
+addgroup app && adduser -S -G app app
+groups app
+```
+
+Back to Dockerfile:
+
+```
+FROM node:14.16.0-alpine3.13
+WORKDIR /app
+COPY . .
+RUN npm install
+ENV API_URL=http://api.ereach.me/
+EXPOSE 3000
+RUN addgroup app && adduser -S -G app app
+USER app
+```
+
+After above we can run the command:
+
+```
+docker build -t react-app .
+```
+
+then:
+
+```
+docker run -it react-app sh
+```
+
+After above use ```whoami``` to check if current user is app.
+
