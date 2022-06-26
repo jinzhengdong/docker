@@ -55,3 +55,40 @@ docker run -dp 3000:3000 tutorial
 
 * After above we can access tutorial from http://localhost:3000
 
+## Updating our App
+
+Update ```/app/src/app.js``` line 56 with following contents:
+
+```html
+<p className="text-center">You have no todo items yet! Add one above!</p>
+```
+
+Stop the running container ```tutorial``` and remove it, back to images and remove ```tutorial``` image also, then run below command:
+
+```bash
+docker build -t tutorial .
+```
+
+After image created we can run it with below command again:
+
+```
+docker run -dp 3000:3000 tutorial
+```
+
+Then check the updating from http://localhost:3000
+
+## Sharing our App
+
+* Access docker hub from https://hub.docker.com
+* Click ```Create Repository``` button
+* Type ```tutorial``` as the name and make it public then click ```Create``` button
+* After repository created we can see ```jinzd/tutorial``` created in the hub.
+* Back to the localhost client side terminal and execute below commands:
+
+```bash
+docker loin -u jinzd
+
+docker tag tutorial jinzd/tutorial
+
+doocker push jinzd/tutorial
+```
