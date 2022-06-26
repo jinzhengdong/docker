@@ -253,3 +253,15 @@ Within the dir try the steps then http://localhost:3000
 
 ### Dockerfile Instructions
 
+Dockerfile includes following parts:
+
+* FROM
+* WORKDIR
+* COPY
+* ADD
+* RUN
+* ENV
+* EXPOSE
+* USER
+* CMD
+* ENTRYPOINT
