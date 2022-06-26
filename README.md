@@ -441,3 +441,128 @@ docker run -it react-app sh
 
 After above use ```whoami``` to check if current user is app.
 
+### Define Entrypoints
+
+Please run the image with below command:
+
+```
+docker run react-app npm start
+```
+
+we got following messages:
+
+```
+> react-app@0.1.0 start /app
+> react-scripts start
+
+ℹ ｢wds｣: Project is running at http://172.17.0.2/
+ℹ ｢wds｣: webpack output is served from
+ℹ ｢wds｣: Content not from webpack is served from /app/public
+ℹ ｢wds｣: 404s will fallback to /
+Starting the development server...
+
+Failed to compile.
+
+EACCES: permission denied, mkdir '/app/node_modules/.cache'
+```
+
+there is permission since we use app user to execute and there is exec permission.
+
+for the issue we should update Dockerfile as below:
+
+```
+FROM node:14.16.0-alpine3.13
+RUN addgroup app && adduser -S -G app app
+USER app
+WORKDIR /app
+COPY . .
+RUN npm install
+ENV API_URL=http://api.ereach.me/
+EXPOSE 3000
+```
+
+After above run below again:
+
+```
+docker build -t react-app .
+```
+
+then:
+
+```
+docker run react-app npm start
+```
+
+in fact we don't want to run image with npm start always, so back to ```Dockerfile``` and:
+
+```
+FROM node:14.16.0-alpine3.13
+RUN addgroup app && adduser -S -G app app
+USER app
+WORKDIR /app
+COPY . .
+RUN npm install
+ENV API_URL=http://api.ereach.me/
+EXPOSE 3000
+CMD npm start
+```
+
+and: 
+
+```
+docker build -t react-app .
+```
+
+then:
+
+```
+docker run react-app
+```
+
+what is differences between RUN and CMD?
+
+RUN is for the built-in operations, CMD is a runtime instruction we can also use below shapes:
+
+```
+CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
+
+docker run react-app --entrypoint
+```
+
+finally, we can run the image with below command:
+
+```
+docker run -dp 3000:3000 react-app
+```
+
+access http://localhost:3000
+
+### Speeding up Builds
+
+back to the terminal and type following command:
+
+```
+docker history react-app
+```
+
+we can see npm install there are a lot of things to do 103M downloaded. Back to Dockerfile and update it as below:
+
+```
+FROM node:14.16.0-alpine3.13
+RUN addgroup app && adduser -S -G app app
+USER app
+WORKDIR /app
+COPY package*.json .
+RUN npm install
+COPY . .
+ENV API_URL=http://api.ereach.me/
+EXPOSE 3000
+CMD npm start
+```
+
+back to the terminal and run:
+
+```
+docker build -t react-app .
+```
